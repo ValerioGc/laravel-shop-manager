@@ -1,0 +1,79 @@
+{
+    "pagination": {
+        "homeProductPagePagination": 10,
+        "productPagePagination": 6,
+        "showPageOldPagination": 5,
+        "searchProductPagination": 12
+    },
+    "settings": {
+        "websiteMaintenance":false,
+        "showHomeBanner": true,
+        "enableShowBanner": true,
+        "bannerImg": "\/storage\/images\/banners\/_1741288605_68ML3U.webp",
+        "showPageImg": "\/storage\/images\/banners\/_1741290665_lh5oTM.webp",
+        "showHomeTitle": true,
+        "showHomeShowSection": true,
+        "showContactMap": true,
+        "contactMapAddress": "Via Roma 1, 00100, Roma"
+    },
+    "titles": {
+        "homeTitleText": {
+            "ita": "Store Website",
+            "eng": "Store Website"
+        },
+        "faqPageTitle": {
+            "ita": "Domande frequenti",
+            "eng": "F.A.Q"
+        },
+        "showPageTitle": {
+            "ita": "Fiere e convention",
+            "eng": "Shows and conventions"
+        },
+        "contactPageTitle": {
+            "ita": "Contatti",
+            "eng": "Contacts"
+        },
+        "searchPageTitle": {
+            "ita": "Risultati per",
+            "eng": "Search results for"
+        },
+        "footerTitle": {
+            "ita": "Seguici su",
+            "eng": "Follow us"
+        },
+        "contactMapTitle": {
+            "ita": "Dove siamo",
+            "eng": "Where are we"
+        }
+    },
+    "text": {
+        "homePageDescriptionText": {
+            "ita": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit.",
+            "eng": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit."
+        },
+        "homePageShowsText": {
+            "ita": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit.",
+            "eng": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit."
+        },
+        "showsPageText": {
+            "ita": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit.",
+            "eng": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit."
+        },
+        "showOldPageText": {
+            "ita": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit.",
+            "eng": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit."
+        },
+        "showNextPageText": {
+            "ita": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit.",
+            "eng": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit."
+        },
+        "contactPageText": {
+            "ita": "Per informazioni, valutazioni, ecc. contattaci su:",
+            "eng": "For information, evaluations, etc. contact us at:"
+        },
+        "footerText": {
+            "ita": "shop_name.com",
+            "eng": "shop_name.com"
+        }
+    }
+}

@@ -1,0 +1,65 @@
+name: shop
+services:
+  
+  ############################## PHP ##############################
+  php:
+    container_name: PHP
+    build:
+      context: ./php
+      dockerfile: Dockerfile
+    volumes:
+      - ../:/var/www/html
+      - composer_cache:/tmp/composer
+    working_dir: /var/www/html
+    environment:
+      DB_HOST: mysql
+    command: >
+      bash -c "/usr/local/bin/init.sh"
+    depends_on:
+      - mysql
+    ports:
+      - "8000:8000"
+    networks:
+      - shop_network
+
+  ############################## MYSQL ##############################
+  mysql:
+    container_name: MySql
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_shop
+      MYSQL_USER: laravel_user
+      MYSQL_PASSWORD: laravel_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - shop_network
+
+  ############################## APACHE ##############################
+  apache:
+    container_name: Apache
+    build:
+      context: ./apache
+      dockerfile: Dockerfile
+    volumes:
+      - ../:/var/www/html
+      - ./apache/httpd.conf:/usr/local/apache2/conf/httpd.conf
+    ports:
+      - "8080:80"
+    depends_on:
+      - php
+    networks:
+      - shop_network
+
+############################## VOLUMES ##############################
+volumes:
+  mysql_data:
+  composer_cache:
+
+############################## NETWORKS ##############################
+networks:
+  shop_network:
+    driver: bridge

@@ -1,0 +1,282 @@
+# Continuous Integration Workflow for website BE microservice
+# Configuration of a workflow for PHP Laravel in a production environment
+# This workflow deploys the project on the prod branch if a push is made on the branch 'deploy_prod'
+# In case of success, a release is created with the project version using the CHANGELOG.txt file as the release body
+#
+# Token:
+#   - GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#
+name: PROD_CI_deploy_pipeline
+
+on:
+  push:
+    branches: [ "deploy_prod" ]
+
+jobs:
+  # Check the version of the project for deployment
+  # This job will read the version from the .env.production file
+  # It will check if the version tag already exists.
+  # If the tag exists, it will bump the version by incrementing the patch number,
+  # update .env.production, commit and push the version bump change.
+  check-deploy-version:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.get_updated_version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+        name: Checkout Deploy Branch
+        with:
+          ref: deploy_prod
+
+      - name: Install jq
+        run: sudo apt-get install -y jq
+
+      - name: Configure Git
+        run: |
+          git config --global user.name 'Versioning BOT (CI)'
+          git config --global user.email 'actions@github.com'
+
+      - name: Get initial version from .env.production
+        id: get_initial_version
+        run: |
+          VERSION=$(grep -E '^APP_VERSION=' .env.production | cut -d '=' -f2)
+          echo "initial_version=$VERSION" >> $GITHUB_OUTPUT
+
+      # Version bump
+      - name: Check for existing version tag and bump if exists
+        id: check_version_tag
+        run: |
+          CURRENT_VERSION=$(grep -E '^APP_VERSION=' .env.production | cut -d '=' -f2)
+          TAG="PRODUCTION_V_${CURRENT_VERSION}"
+          if git ls-remote --tags origin | grep -q "refs/tags/$TAG"; then
+            echo "Version $TAG already exists. Bumping version."
+            IFS='.' read -r major minor patch <<< "$CURRENT_VERSION"
+            NEW_PATCH=$((patch + 1))
+            NEW_VERSION="$major.$minor.$NEW_PATCH"
+            echo "New version: $NEW_VERSION"
+            # Aggiorna il file .env.production con la nuova versione
+            sed -i "s/^APP_VERSION=.*/APP_VERSION=$NEW_VERSION/" .env.production
+            git add .env.production
+            git commit -m "Bump version from $CURRENT_VERSION to $NEW_VERSION"
+            git push origin deploy_prod
+          fi
+
+      - name: Get updated version from .env.production
+        id: get_updated_version
+        run: |
+          UPDATED_VERSION=$(grep -E '^APP_VERSION=' .env.production | cut -d '=' -f2)
+          echo "version=$UPDATED_VERSION" >> $GITHUB_OUTPUT
+
+  # Merge the deploy_prod branch into the prod branch
+  # Create a backup tag for the prod branch before the merge
+  # Replace the .env file with the .env.production file
+  merge-and-deploy:
+    runs-on: ubuntu-latest
+    needs: check-deploy-version
+    steps:
+      - name: Checkout deploy_prod branch
+        uses: actions/checkout@v4
+        with:
+          ref: deploy_prod
+
+      - name: Configure Git
+        run: |
+          git config --global user.name 'Deploy BOT (CI)'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          echo ".github/" >> .git/info/exclude 
+
+      - name: Checkout prod branch
+        run: |
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+          git fetch origin
+          git checkout prod
+
+      - name: Remove existing backup tag if exists
+        run: |
+          if git rev-parse backup-prod-before-deploy_prod >/dev/null 2>&1; then
+            git tag -d backup-prod-before-deploy_prod
+            git push origin :refs/tags/backup-prod-before-deploy_prod
+          fi
+
+      - name: Backup current prod branch
+        run: |
+          git tag backup-prod-before-deploy_prod
+          git push origin --tags
+
+      - name: Merge deploy_prod into prod
+        run: |
+          git merge deploy_prod --allow-unrelated-histories --strategy-option theirs --no-ff --no-edit
+
+      - name: Replace .env file with .env.production
+        run: |
+          if [ -f .env ]; then
+            rm .env
+          fi
+          mv .env.production .env
+
+      - name: Commit and push changes for .env files
+        run: |
+          git add -f .env
+          if [ -f .env.development ]; then
+            git add -f .env.development
+          fi
+          git commit -m "Update .env files for production" || echo "No changes to commit"
+          git push origin prod --force
+
+  # Create a GitHub release for the production branch
+  # The release tag is PRODUCTION_V_<version>
+  # The release name is Release PRODUCTION_V_<version>
+  # The release body is the content of the CHANGELOG.txt file
+  create-release:
+    if: success()
+    runs-on: ubuntu-latest
+    needs: [merge-and-deploy, check-deploy-version]
+    steps:
+      - name: Checkout prod branch
+        uses: actions/checkout@v4
+        with:
+          ref: prod
+
+      - name: Configure Git
+        run: |
+          git config --global user.name 'Release BOT (CI)'
+          git config --global user.email '
+
+      - name: Get content of CHANGELOG.txt
+        id: get_changelog
+        run: |
+            echo "Checking if CHANGELOG.txt exists..."
+            if [ -f CHANGELOG.txt ]; then
+              echo "CHANGELOG.txt found."
+              echo "Debug: file size (in bytes):"
+              wc -c CHANGELOG.txt
+              if [ -s CHANGELOG.txt ]; then
+                CHANGELOG=$(cat CHANGELOG.txt)
+                echo "CHANGELOG.txt content found."
+              else
+                echo "CHANGELOG.txt is empty."
+                CHANGELOG="<p><b>General bugfix</b> and <b>optimization</b>.</p>"
+              fi
+            else
+              echo "CHANGELOG.txt not found."
+              CHANGELOG="No changelog available."
+            fi
+            # Imposta l'output in modalità multilinea per gestire caratteri speciali
+            echo "changelog<<EOF" >> $GITHUB_OUTPUT
+            echo "$CHANGELOG" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Create a GitHub Release
+        id: create_release
+        if: success()
+        uses: actions/create-release@v1
+        with:
+          tag_name: "PRODUCTION_V_${{ needs.check-deploy-version.outputs.version }}"
+          release_name: "Release PRODUCTION_V_${{ needs.check-deploy-version.outputs.version }}"
+          body: |
+                <img src="https://github.com/static/assets/logo.svg" alt="logo" align="center" width="180" height="100" />
+                <h2>Changelog Version: ${{ needs.check-deploy-version.outputs.version }}</h2>
+                Changes in this release: 
+                <br/>
+                <br/>
+
+                ${{ steps.get_changelog.outputs.changelog }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Empty prod branch CHANGELOG.txt
+        id: empty_changelog
+        run: |
+            if [ -f CHANGELOG.txt ]; then
+              echo -n "" > CHANGELOG.txt
+              git add CHANGELOG.txt
+              if git diff --staged --quiet; then
+                echo "No changes to commit"
+              else
+                git commit -m "Empty CHANGELOG after release"
+                git push origin prod
+              fi
+            fi
+
+
+  # Rollback the prod branch to the backup tag
+  # Revert the version bump commit on the deploy_prod branch if it exists
+  rollback-all:
+    if: failure()
+    runs-on: ubuntu-latest
+    needs: [ check-deploy-version, merge-and-deploy, create-release ]
+    steps:
+      - uses: actions/checkout@v4
+        name: Checkout Prod Branch for Rollback
+        with:
+          ref: prod
+
+      - name: Configure Git for Rollback
+        run: |
+          git config --global user.name "Rollback BOT (CI)"
+          git config --global user.email "actions@github.com"
+
+      - name: Rollback prod branch
+        run: |
+          git reset --hard backup-prod-before-deploy_prod
+          git push origin prod --force
+          git tag -d backup-prod-before-deploy_prod
+          git push origin :refs/tags/backup-prod-before-deploy_prod
+
+      - name: Revert version bump commit on deploy_prod branch if exists
+        run: |
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+          git fetch origin
+          git checkout deploy_prod
+          if git log -1 --pretty=%B | grep -q "Bump version from"; then
+            echo "Reverting version bump commit."
+            git revert HEAD --no-edit
+            git push origin deploy_prod --force
+          else
+            echo "No version bump commit found to revert."
+          fi
+
+  # Cleanup the workspace after deployment
+  # Remove the backup tag and temporary files
+  # Empty the CHANGELOG.txt file on the main branch
+  cleanup-workspace:
+    runs-on: ubuntu-latest
+    needs: rollback-all
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+        name: Checkout prod branch for Cleanup
+        with:
+          ref: prod
+
+      - name: Configure Git for Cleanup
+        run: |
+          git config --global user.name 'Cleanup BOT (CI)'
+          git config --global user.email 'actions@github.com'
+
+      - name: Remove backup tag
+        run: |
+          if git rev-parse backup-prod-before-deploy_prod >/dev/null 2>&1; then
+            git tag -d backup-prod-before-deploy_prod
+            git push origin :refs/tags/backup-prod-before-deploy_prod
+          fi
+      
+      - name: Checkout branch main
+        run: |
+            git fetch origin
+            git checkout main
+            git pull origin main
+      
+      - name: Empty CHANGELOG.txt
+        id: empty_changelog_main
+        run: |
+            if [ -f CHANGELOG.txt ]; then
+              echo -n "" > CHANGELOG.txt
+              git add CHANGELOG.txt
+              if git diff --staged --quiet; then
+                echo "No changes to commit"
+              else
+                git commit -m "Empty CHANGELOG after release"
+                git push origin main
+              fi
+            fi

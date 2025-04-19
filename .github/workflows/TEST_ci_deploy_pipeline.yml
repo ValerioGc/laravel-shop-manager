@@ -1,0 +1,92 @@
+# Continuous Integration Workflow for website BE microservice
+# Configuration of a workflow for PHP Laravel in a test environment
+# This workflow deploys the project on the 'test' branch if a push is made on the branch 'deploy_test'
+#
+# Token:
+#   - GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#
+name: TEST_CI_deploy_pipeline
+
+on:
+  push:
+    branches: [ "deploy_test" ]
+
+jobs:
+
+  # Merge the deploy_test branch into the test branch
+  # Replace the .env file with the .env.production file
+  merge-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout branch deploy_test
+      uses: actions/checkout@v4
+      with:
+        ref: deploy_test
+
+    - name: Configure Git
+      run: |
+        git config --global user.name 'Deploy Test BOT (CI)'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+        echo ".github/" >> .git/info/exclude 
+
+    - name: Checkout branch test
+      run: |
+        git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+        git fetch origin
+        git checkout test
+
+    - name: Remove existing backup tag if exists
+      run: |
+        if git rev-parse backup-test-before-deploy >/dev/null 2>&1; then
+          git tag -d backup-test-before-deploy
+          git push origin :refs/tags/backup-test-before-deploy
+        fi
+
+    - name: Backup current test branch
+      run: |
+        git tag backup-test-before-deploy
+        git push origin --tags
+
+    - name: Merge deploy_test into test
+      run: |
+        git merge deploy_test --allow-unrelated-histories --strategy-option theirs --no-ff --no-edit
+
+    - name: Replace .env files
+      run: |
+        if [ -f .env ]; then
+          rm .env
+        fi
+        mv .env.test .env
+
+    - name: Commit e push delle modifiche ai file .env
+      run: |
+        git add -f .env
+        if [ -f .env.test ]; then
+          git add -f .env.test
+        fi
+        git commit -m "Aggiorna i file .env per la produzione" || echo "Nessuna modifica da commitare"
+        git push origin test --force
+
+  # Rollback the test branch if the deployment fails
+  # Reset the test branch to the backup tag
+  rollback-deploy-test:
+    runs-on: ubuntu-latest
+    needs: merge-and-deploy
+    if: failure()
+    steps:
+    - uses: actions/checkout@v4
+      name: Checkout test Branch
+      with:
+        ref: test
+
+    - name: Configure Git
+      run: |
+        git config --global user.name "Rollback BOT (CI)"
+        git config --global user.email "actions@github.com"
+
+    - name: Rollback test Branch
+      run: |
+        git reset --hard backup-test-before-deploy
+        git push origin test --force
+        git tag -d backup-test-before-deploy
+        git push origin :refs/tags/backup-test-before-deploy
