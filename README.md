@@ -8,8 +8,10 @@
 
 
 <p align="center" id="description">
-Shop manager back end microservice repository
 
+Full Back End microservice for the management of a back office panel and front end website for a e-commerce platform. <br/>
+The project is developed in **PHP** with the **Laravel 12** framework. <br/> 
+The project is designed to be used in conjunction with the [**Front End**](https://github.com/ValerioGc/shop-manager-fe) and [**Back office**](https://github.com/ValerioGc/shop-manager-bo) webapplications and communicate with each other through **REST API**. The code features a image conversion system, caching and compression of data, and a log management system. <br/>  It also integrates a translation service for the back office and a docker system to run the application without having to install dependencies locally. <br/>
 </p>
 
 ---
@@ -30,10 +32,6 @@ Shop manager back end microservice repository
 
 <br/> 
 <h2 id="desc">💻 Built with</h2>
-
-<p>Technologies and libraries used in this project:</p>
-
-<h4 align="center">Technologies</h4>
 
 <table align="center" style="border-collapse: collapse; border: none;">
   <tr>
