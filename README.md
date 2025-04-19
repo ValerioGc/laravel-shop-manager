@@ -215,7 +215,7 @@ php artisan docker:{mode}
 
 <h2 id="cloudT">🌐 Google Translate</h2>
 
-The (back office)[https://github.com/ValerioGc/] uses the text translation service offered by Google Cloud. <br/>
+The (**back office**)[https://github.com/ValerioGc/shop-manager-bo] uses the text translation service offered by Google Cloud. <br/>
 The service is Cloud translate API (*Cloud translation - BASIC*) <br/>
 It has a limit of 500,000 characters per month and has a maximum number of characters per request. <br/>
 The service uses an **API KEY** for authentication, which is saved in the **.env.production** and **env.test** files in the root of the project.
