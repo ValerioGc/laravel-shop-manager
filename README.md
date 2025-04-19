@@ -293,7 +293,7 @@ To reach it once you enter the panel, you need to go through the side menu on **
   
   - **createThumbnail**: Generate thumbnails from the original image, resizing it to the defined measurements while maintaining the aspect ratio.
   
-  -**applyWatermark**: Apply the logo as a watermark on product images, bottom right with maximum width and height measurements.
+  - **applyWatermark**: Apply the logo as a watermark on product images, bottom right with maximum width and height measurements.
 
 
 <br/>
