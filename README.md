@@ -7,51 +7,42 @@
 </p>
 
 
-<p align="center" id="description">
 
-Full Back End microservice for the management of a back office panel and front end website for a e-commerce platform. <br/>
-The project is developed in **PHP** with the **Laravel 12** framework. <br/> 
-The project is designed to be used in conjunction with the [**Front End**](https://github.com/ValerioGc/shop-manager-fe) and [**Back office**](https://github.com/ValerioGc/shop-manager-bo) webapplications and communicate with each other through **REST API**. The code features a image conversion system, caching and compression of data, and a log management system. <br/>  It also integrates a translation service for the back office and a docker system to run the application without having to install dependencies locally. <br/>
-</p>
-
----
-
-### 🗺️Index
-
-* [Description and technologies](#desc)
-* [Wiki](#wiki)
-> * [Install DB and dependencies](#installation)
-> * [Console commands](#console)
-> * [Branch rules and structure](#branch)
-> * [Deploy](#deploy)
-> * [Image Conversion](#convert)
-> * [Caching Data](#cache)
-> * [Log Management](#log)
-> * [Image Conversion](#img)
-
+Full Back End REST microservice for the management of a back office panel and front end website for a e-commerce platform. <br/>
+The project is developed in **PHP** with the **Laravel 12** framework and is designed to be used in conjunction with the [**Front End**](https://github.com/ValerioGc/shop-manager-fe) and [**Back office**](https://github.com/ValerioGc/shop-manager-bo) webapplications and communicate with each other through **REST API**. The code features a image conversion system, caching and compression of data, and a log management system. <br/>  It also integrates a translation service using google translate API for the back office and a docker system to run the application without having to install dependencies locally or to run the application in a production environment. <br/>
 
 <br/> 
+
 <h2 id="desc">💻 Built with</h2>
 
 <table align="center" style="border-collapse: collapse; border: none;">
   <tr>
-    <td style="padding: 10px; border: none;">
-      <img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" alt="logo vue" width="50px" height="50px" />
+    <td style="padding: 5px; border: none;">
+      <img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" alt="logo vue" width="100px" height="50px" />
     </td>
-    <td style="padding: 10px; border: none;">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/2/27/PHP-logo.svg" alt="logo javascript" width="50px" height="50px" />
+    <td style="padding: 5px; border: none;">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/2/27/PHP-logo.svg" alt="logo javascript" width="80px" height="50px" />
     </td>
   </tr>
 </table>
 
-<br/> 
+
+
+### 🗺️Index
+
+ * [Install DB and dependencies](#installation)
+ * [Console commands](#console)
+ * [Branch rules and structure](#branch)
+ * [CI/CD Github actions](#deploy)
+ * [Docker](#docker)
+ * [Image Conversion](#convert)
+ * [Caching Data](#cache)
+ * [Log Management](#log)
+ * [Image Conversion](#img)
+
 <br/> 
 
-<h2 id="wiki">📖 WIKI</h2>
 
-General Wiki for the project. Console commands, procedures and links to services.
-
-<br/> 
 
 <h2 id="installation">🛠️ Installation commands and dependencies:</h2>
 
@@ -91,9 +82,7 @@ php artisan serve
 php artisan test
 ```
 
-<br/> 
-
-
+<br/>
 
 <h2 id="console">🌩️ Console commands:</h2>
 
@@ -128,32 +117,21 @@ php artisan down
 php artisan up
 ```
 
-
-<h2 id="branch">🌱 Branch Rules</h2>
-
-*The deploy branches are divided by environment. When pushing to the deploy_prod/test branch, the pipeline is triggered. The branches should only be used for CI/CD release with Github Action and Plesk.*
-[See the 🧨Deploy section](#deploy)
-
-- **dev**: Development and testing branch
-- **deploy_test**: Branch for release in the test environment 
-- **deploy_prod**: Branch for release in the production environment 
-
-
 <br/> 
 
-<h2 id="deploy">🧨 Deploy</h2>
 
-The release is performed via a pipeline on GitHub Actions.
-[See the 🛠️Build section](#build)
+<h2 id="deploy">🔄 CI/CD</h2>
 
-It executes the webhook to notify Plesk (deployment manager) of the new version of the deploy.
-The test pipeline is simplified. It builds and updates the test branch.
+The project is integrated with GitHub Actions for CI/CD. The pipeline is triggered on every push to the deploy_prod/deploy_test branch. The pipeline includes the following steps:
 
-#### **Pipeline**:
-- TEST_CI_deploy_pipeline
-- PROD_CI_deploy_pipeline
+- **Version and changelog extraction**: The version and changelog are extracted from the package.json file to be used in the release process.
+- **Replace .env file**: The .env file is replaced with the .env.production or .env.test file based on the branch.
+- **Test**: The project is tested using the test script.
+- **Deploy**: The modified build is deployed to the production/test branch.
+- **Github release**: The project is released on GitHub using the release script and **tagged with version numbers**.
 
-### **Script deploy**
+
+### **Deploy scripts**
 
 The deployment process is automated through scripts that can be used via artisan commands.
 
@@ -174,21 +152,7 @@ php artisan deploy test
 <br/>
 
 
-### **Deployment procedure CI/CD**
-
-* Update the project version in **.env** and **.env.test** in the root of the project (version field)
-* Commit everything on the main branch and push
-* Change branch choosing depending on where you want to release `git checkout deploy_prod / checkout deploy_test` [*see branch section*](#branch)
-* Pull
-* Merge with the command `git merge main`
-* Commit and push
-
- <br/>
-
-
-<h2 id="docker">
-<img src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Docker_%28container_engine%29_logo.svg" /> 
-</h2>
+<h2 id="docker">Docker integration</h2>
 
 The project uses docker to run the application and perform other operations without having to install the necessary dependencies locally. The script generates several instances:
 - Apache
@@ -206,12 +170,12 @@ php artisan docker:{mode}
 php artisan docker:{mode}
 ```
 
-#### _Modalità disponibili_
+#### _Avaliable mode_
 > - development
 > - test
 > - prod
 
- <br/>
+<br/>
 
 <h2 id="cloudT">🌐 Google Translate</h2>
 
@@ -219,8 +183,6 @@ The [**back office**](https://github.com/ValerioGc/shop-manager-bo) uses the tex
 The service is Cloud translate API (*Cloud translation - BASIC*) <br/>
 It has a limit of 500,000 characters per month and has a maximum number of characters per request. <br/>
 The service uses an **API KEY** for authentication, which is saved in the **.env.production** and **env.test** files in the root of the project.
-
-#### [**Link console google cloud**](https://console.cloud.google.com?hl=it)
 
 <br/>
 
@@ -278,8 +240,7 @@ The images are processed by the **ConvertImageUtils** controller which performs 
 - Application of watermark with the logo on images
 
 The settings for these processes are in the **.env** files (**.env.test**, **.env.production**) present in the root of the repository or the application on plesk
-The values are **modifiable** directly from plesk by modifying the .env file.
-To reach it once you enter the panel, you need to go through the side menu on **File** > **service.shop.com**.
+The values are **modifiable** directly from modifying the .env file.
 
 
 ### Functions Utils images:
