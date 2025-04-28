@@ -262,21 +262,21 @@ The properties of the file **. env** are as follows:
 | Property                       | Description                                                                           |
 | ------------------------------ |------------------------------------------------------------------------------------- |
 | `IMAGE_COMPRESSION_RATIO`      | Defines the level of compression for images converted to WebP format(*Default = 75*).|
-| `BANNER_IMAGE_MAX_WIDTH’       | Maximum width value per image banner home page |
-| `BANNER_IMAGE_MAX_HEIGHT’      | Maximum height value per image banner home page  |
+| `BANNER_IMAGE_MAX_WIDTH`       | Maximum width value per image banner home page |
+| `BANNER_IMAGE_MAX_HEIGHT`      | Maximum height value per image banner home page  |
 | `SHOWPAGE_IMAGE_MAX_WIDTH`     | Maximum width per image page of trade fairs.     |
 | `SHOWPAGE_IMAGE_MAX_HEIGHT`    | Maximum height per image page of trade fairs.    |
 | `IMAGE_MAX_WIDTH`              | Maximum width value for general resize. |
 | `IMAGE_MAX_HEIGHT`             | Maximum height value for general resize. |
-| `CONTACTS_THUMBNAIL_WIDTH’     | Maximum width value for thumbnails contacts.|
-| `CONTACTS_THUMBNAIL_HEIGHT’    | Maximum height value for thumbnails contacts.|
+| `CONTACTS_THUMBNAIL_WIDTH`     | Maximum width value for thumbnails contacts.|
+| `CONTACTS_THUMBNAIL_HEIGHT`    | Maximum height value for thumbnails contacts.|
 | `FAIRS_IMAGE_MAX_WIDTH`        | Maximum width value for fair images. |
 | `FAIRS_IMAGE_MAX_HEIGHT`       | Maximum height value for fair images. |
 | `FAIRS_THUMBNAIL_LOGO_WIDTH`   | Maximum width value for trade fair thumbnails. |
 | `FAIRS_THUMBNAIL_LOGO_HEIGHT`  | Maximum height value for trade fair thumbnails. |
 | `FAIRS_THUMBNAIL_IMAGE_WIDTH`  | Maximum width value for trade fair thumbnails. |
 | `FAIRS_THUMBNAIL_IMAGE_HEIGHT` | Maximum height value for trade fair thumbnails. |
-| `PRODUCTS_IMAGE_MAX_WIDTH’     | Maximum width value for product images. |
+| `PRODUCTS_IMAGE_MAX_WIDTH`     | Maximum width value for product images. |
 | `PRODUCTS_IMAGE_MAX_HEIGHT`    | Maximum width value for product images. |
 | `PRODUCTS_THUMBNAIL_WIDTH`     | Maximum high value for product thumbnails. |
 | `PRODUCTS_THUMBNAIL_HEIGHT`    | Maximum width value for thumbnails product images.  |
